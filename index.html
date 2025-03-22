@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css"> 
+    <script src="script.js"></script>
+    <script src="user_input.js"></script>
+    <script src="attendance_report.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="revenue_report.js"></script>
+    <script src="popular_items.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="dashboard_generator.js"></script>
+    <script src="sidebar.js"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        async function fetchLayout() {
+            try {
+                let response = await fetch("http://localhost:5000/layout");
+                let data = await response.json();
+                document.getElementById("layoutData").innerText = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error("Error fetching layout:", error);
+                document.getElementById("layoutData").innerText = "Failed to load layout data.";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            fetchLayout();  
+            loadSalesData(); 
+            renderAttendanceChart();
+            renderRevenueChart();
+            renderPopularItems();
+        });
+    </script>
+</head>
+<body> 
+
+    <div class="sidebar">
+        <div class="tab active"><i class="fas fa-tachometer-alt"></i> Dashboard</div>
+        <div class="tab"><i class="fas fa-chart-line"></i> Analytics</div>
+        <div class="tab"><i class="fas fa-users"></i> Users</div>
+        <div class="tab"><i class="fas fa-file-alt"></i> Reports</div>
+        <div class="tab"><i class="fas fa-cogs"></i> Settings</div>
+        <div class="tab"><i class="fas fa-info-circle"></i> Help</div>
+        <div class="tab logout"><i class="fas fa-sign-out-alt"></i> Logout</div>
+    </div>
+
+    <div class="main">
+        <header class="header">
+            <div class="header-left">
+                <div class="menu-tab"><i class="fas fa-bars"></i></div>
+                <div class="name-tab">Dashboard</div>
+            </div>
+            <div class="search-tab">
+                <input type="text" placeholder="Search...">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="header-right">
+                <div class="icon-tab"><i class="fas fa-bell"></i></div>
+                <div class="icon-tab"><i class="fas fa-envelope"></i></div>
+                <div class="icon-tab"><i class="fas fa-cog"></i></div>
+                <div class="profile-tab">
+                    <img src="images/user_profile.png" alt="Profile">
+                    <span>Profile</span> 
+                </div>
+            </div>
+        </header>
+
+        <div class="user-input-section">
+            <h2>Add Sales Data</h2>
+            <form id="salesForm">
+                <label for="item">Item Name:</label>
+                <input type="text" id="item" name="item" required>
+                <label for="quantity">Quantity Sold:</label>
+                <input type="number" id="quantity" name="quantity" required>
+                <label for="price">Price Per Item:</label>
+                <input type="number" id="price" name="price" required>
+                <button type="submit">Add Sale</button>
+            </form>
+        </div>
+
+        <div class="sales-data">
+            <h2>Sales Records</h2>
+            <ul id="salesList"></ul>
+        </div>
+
+        <div class="dashboard-content">
+            <div class="overview-section">
+                <div class="overview-card">
+                    <i class="fas fa-dollar-sign"></i>
+                    <h3>Total Revenue</h3>
+                    <p id="totalRevenue">Loading...</p>
+                </div>
+                <div class="overview-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Net Profit</h3>
+                    <p id="netProfit">Loading...</p>
+                </div>
+                <div class="overview-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>Time Sold</h3>
+                    <p id="timeSold">Loading...</p>
+                </div>
+                <div class="overview-card">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Growth</h3>
+                    <p id="growth">Loading...</p>
+                </div>
+            </div>
+
+            <div class="attendance-report">
+                <h2>Attendance Report (Sales Per Hour)</h2>
+                <canvas id="attendanceChart"></canvas>
+            </div>
+
+            <div class="revenue-report">
+                <h2>Revenue Report</h2>
+                <canvas id="revenueChart"></canvas> 
+            </div>
+
+            <div class="popular-items">
+                <h2>Most Popular Items</h2>
+                <div id="itemsContainer"></div>
+            </div>
+
+            <div class="layout-section">
+                <h2>Dashboard Layout Data</h2>
+                <pre id="layoutData">Loading...</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-generator">
+        <h2>Customizable Dashboard</h2>
+        <div class="widget-container" id="widgetContainer"></div>
+        <button id="addWidget">Add Widget</button>
+        <button id="saveLayout">Save Layout</button>
+    </div>
+
+</body>
+</html>

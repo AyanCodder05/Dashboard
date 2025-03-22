@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Analytics Dashboard</h1>
+        <a href="index.html">Home</a> | <a href="users.html">Users</a>
+    </header>
+
+    <section>
+        <canvas id="salesChart"></canvas>
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/layout')
+                .then(response => response.json())
+                .then(data => console.log('Loaded Layout:', data));
+
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                    datasets: [{
+                        label: "Sales",
+                        data: [12, 19, 3, 5, 2, 3, 9],
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
